@@ -1,0 +1,6 @@
+---
+# tasks file for qgis
+- name: rstudio tasks
+  tags: rstudio
+  block: 
+  - name: Download rstudio....

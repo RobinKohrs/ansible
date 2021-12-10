@@ -1,0 +1,37 @@
+---
+# tasks file for qgis
+- name: qgis tasks
+  tags: qgis
+  block: 
+  - name: Install qgis signing key (so software from qgis repos will be trusted...)
+    shell: wget -qO - https://qgis.org/downloads/qgis-2021.gpg.key | sudo gpg --no-default-keyring --keyring gnupg-ring:/etc/apt/trusted.gpg.d/qgis-archive.gpg --import
+
+  - name: change access to file
+    become: true
+    shell:  chmod a+r /etc/apt/trusted.gpg.d/qgis-archive.gpg
+
+  - name: update apt-get repo and cache
+    apt: update_cache=yes force_apt_get=yes cache_valid_time=3600
+
+  - name: add qgis repo
+    become: true
+    ansible.builtin.apt_repository:
+      repo: deb https://qgis.org/debian focal main
+      state: present
+
+  - name: add qgis src repo
+    become: true
+    ansible.builtin.apt_repository:
+      repo: deb-src https://qgis.org/debian focal main
+      state: present
+
+  - name: installq gis packackes
+    become: true
+    apt: pkg={{item}} state=present update_cache=yes cache_valid_time=3600
+    with_items:
+      - qgis
+      - qgis-plugin-grass
+      - saga
+
+
+
